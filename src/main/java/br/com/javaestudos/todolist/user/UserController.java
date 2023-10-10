@@ -1,5 +1,9 @@
 package br.com.javaestudos.todolist.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -12,10 +16,21 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController {
 
+    @Autowired // spring gerenciatodo ciclo de vida
+    private IUserRepository userRepository;
 
      @PostMapping("/")
-     public void create(@RequestBody UserModel userModel) {
-            System.out.println(userModel.name);
+     public ResponseEntity create(@RequestBody UserModel userModel) {
+         var user = this.userRepository.findByUsername(userModel.getUsername());
+
+         if(user != null) {
+             // Mensagem de erro
+             // Status Code do Postman
+             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já existe");
+         }
+
+         var userCreated = this.userRepository.save(userModel);
+         return ResponseEntity.status(HttpStatus.CREATED).body(userCreated);
      }
 
 }
