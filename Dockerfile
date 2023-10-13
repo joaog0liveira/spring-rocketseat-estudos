@@ -1,4 +1,4 @@
-FROM ubuntu:lastest as build
+FROM ubuntu:latest as build
 
 RUN apt-get update
 RUN apt-get install openjdk-20-jdk -y
